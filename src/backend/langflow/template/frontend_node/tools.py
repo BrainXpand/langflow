@@ -81,3 +81,29 @@ class PythonFunctionNode(FrontendNode):
 
     def to_dict(self):
         return super().to_dict()
+
+        
+
+class KnowySearchToolNode(FrontendNode):
+    name: str = "KnowySearchTool"
+    template: Template = Template(
+        type_name="KnowySearchTool",
+        fields=[
+            TemplateField(
+                field_type="str",
+                required=True,
+                placeholder="",
+                is_list=False,
+                show=True,
+                multiline=True,
+                value="",
+                name="user_token",
+                advanced=False,
+            )
+        ],
+    )
+    description: str = "Search the Knowy knowledge base."
+    base_classes: list[str] = ["Tool"]
+
+    def to_dict(self):
+        return super().to_dict()

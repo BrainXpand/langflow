@@ -100,6 +100,6 @@ def get_tool_params(tool, **kwargs) -> Dict:
         # instantiate the class
 
         return get_class_tool_params(tool, **kwargs) or {}
-
+    
     else:
         raise ValueError("Tool must be a function or class.")

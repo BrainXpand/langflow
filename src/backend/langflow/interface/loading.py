@@ -20,6 +20,7 @@ from langchain.llms.loading import load_llm_from_config
 from pydantic import ValidationError
 
 from langflow.interface.agents.custom import CUSTOM_AGENTS
+from langflow.interface.tools.constants import CUSTOM_TOOLS
 from langflow.interface.importing.utils import import_by_type
 from langflow.interface.run import fix_memory_inputs
 from langflow.interface.toolkits.base import toolkits_creator
@@ -36,6 +37,11 @@ def instantiate_class(node_type: str, base_type: str, params: Dict) -> Any:
         custom_agent = CUSTOM_AGENTS.get(node_type)
         if custom_agent:
             return custom_agent.initialize(**params)
+    
+    if node_type in CUSTOM_TOOLS:
+        custom_tool = CUSTOM_TOOLS.get(node_type)
+        if custom_tool:
+            return custom_tool(**params)
 
     class_object = import_by_type(_type=base_type, name=node_type)
     return instantiate_based_on_type(class_object, base_type, node_type, params)

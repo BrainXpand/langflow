@@ -95,6 +95,7 @@ tools:
   - GoogleSerperRun
   - JsonListKeysTool
   - JsonGetValueTool
+  - KnowySearchTool
   - PythonREPLTool
   - PythonAstREPLTool
   - RequestsGetTool
