@@ -44,6 +44,7 @@ class KnowySearchTool(BaseTool, BaseModel):
     name = "Knowy Search"
     description:str
     user_token:str
+    search_source:str
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -52,17 +53,39 @@ class KnowySearchTool(BaseTool, BaseModel):
         """Use the tool."""
         from requests import get, post
 
-        res = get('https://devapi.knowy.ai/search/search', 
-            params={ 
-                'query': query
-            },
-            headers={
+        search_source = self.search_source
+        headers = {
             'Authorization': f'Bearer {self.user_token}'
-        })
-        query_result = res.json()
+        }
+        
+        if search_source=="document_chunks":
+            url = 'https://devapi.knowy.ai/user_content/search'
+            response = get(url, headers=headers, params={'query': query})
+            chunk_ids = list(set([p['metadata']['id'] for p in response.json()]))
+
+        elif search_source=="documents":
+            url = 'https://devapi.knowy.ai/user_content/search'
+            response = get(url, headers=headers, params={'query': query})
+            chunk_ids = list(set([p['metadata']['file_id'] for p in response.json()]))
+
+        elif search_source=="knowy":
+            url = 'https://devapi.knowy.ai/search/search'
+            response = get(url, headers=headers, params={'query': query})
+            chunk_ids = list(set([p['id'] for p in response.json()]))
+
+        elif search_source=="knowy_sections":
+            url = 'https://devapi.knowy.ai/search/search'
+            response = get(url, headers=headers, params={'query': query, 'type': 'section'})
+            chunk_ids = list(set([id for id in response.json()]))
+
+        elif search_source=="web":
+            url = 'https://devapi.knowy.ai/search/search'
+            response = get(url, headers=headers, params={'query': query, 'type': 'web'})
+            chunk_ids = list(set([id for id in response.json()]))
+
         data = post('https://devapi.knowy.ai/content/getKnowledgeItems', 
             json={ 
-                'ids': query_result, 
+                'ids': chunk_ids, 
                 'properties': ['title', 'id'] 
             },
             headers={

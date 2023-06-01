@@ -103,6 +103,17 @@ class KnowySearchToolNode(FrontendNode):
             TemplateField(
                 field_type="str",
                 required=True,
+                is_list=True,
+                show=True,
+                multiline=False,
+                options=["knowy", "knowy_sections", "document_chunks", "documents", "web"],
+                value="knowy",
+                name="search_source",
+                advanced=False,
+            ),
+            TemplateField(
+                field_type="str",
+                required=True,
                 placeholder="",
                 is_list=False,
                 show=True,
