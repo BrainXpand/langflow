@@ -99,10 +99,68 @@ class KnowySearchToolNode(FrontendNode):
                 value="",
                 name="user_token",
                 advanced=False,
+            ),
+            TemplateField(
+                field_type="str",
+                required=True,
+                placeholder="",
+                is_list=False,
+                show=True,
+                multiline=True,
+                value="This tool searches the Knowy knowledge base and returns a list of title, id pairs. The input query should be the title of a wikipedia page.",
+                name="description",
+                advanced=False,
             )
         ],
     )
     description: str = "Search the Knowy knowledge base."
+    base_classes: list[str] = ["Tool"]
+
+    def to_dict(self):
+        return super().to_dict()
+    
+
+class KnowyItemInfoGetterToolNode(FrontendNode):
+    name: str = "KnowyItemInfoGetterTool"
+    template: Template = Template(
+        type_name="KnowyItemInfoGetterTool",
+        fields=[
+            TemplateField(
+                field_type="str",
+                required=True,
+                placeholder="",
+                is_list=False,
+                show=True,
+                multiline=True,
+                value="",
+                name="user_token",
+                advanced=False,
+            ),
+            TemplateField(
+                field_type="str",
+                required=True,
+                placeholder="",
+                is_list=False,
+                show=True,
+                multiline=True,
+                value="This tool gets the properties of a Knowy item, specified by the item id. The input should be the id and nothing else.",
+                name="description",
+                advanced=False,
+            ),
+            TemplateField(
+                field_type="str",
+                required=True,
+                placeholder="",
+                is_list=False,
+                show=True,
+                multiline=True,
+                value="plainContent",
+                name="properties",
+                advanced=False,
+            )
+        ],
+    )
+    description: str = "Get Knowy item info."
     base_classes: list[str] = ["Tool"]
 
     def to_dict(self):

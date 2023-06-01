@@ -96,6 +96,7 @@ tools:
   - JsonListKeysTool
   - JsonGetValueTool
   - KnowySearchTool
+  - KnowyItemInfoGetterTool
   - PythonREPLTool
   - PythonAstREPLTool
   - RequestsGetTool

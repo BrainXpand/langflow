@@ -5,6 +5,7 @@ CUSTOM_NODES = {
     "prompts": {"ZeroShotPrompt": frontend_node.prompts.ZeroShotPromptNode()},
     "tools": {
         "KnowySearchTool": frontend_node.tools.KnowySearchToolNode(),
+        "KnowyItemInfoGetterTool": frontend_node.tools.KnowyItemInfoGetterToolNode(),
         "PythonFunction": frontend_node.tools.PythonFunctionNode(),
         "Tool": frontend_node.tools.ToolNode(),
     },
