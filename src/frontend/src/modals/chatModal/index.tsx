@@ -141,6 +141,9 @@ export default function ChatModal({
         return newChatHistory;
       });
     }
+    if (data.type === "log") {
+      console.log(data.message);
+    }
     if (data.type === "start") {
       addChatHistory("", false);
       isStream = true;
@@ -185,7 +188,7 @@ export default function ChatModal({
       };
       newWs.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log("Received data:", data);
+        //console.log("Received data:", data);
         handleWsMessage(data);
         //get chat history
       };

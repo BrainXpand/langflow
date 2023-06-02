@@ -14,6 +14,7 @@ from langflow.interface.run import (
 )
 from langflow.interface.utils import pil_to_base64, try_setting_streaming_options
 from langflow.utils.logger import logger
+import sys
 
 
 class ChatHistory(Subject):
@@ -181,11 +182,17 @@ class ChatManager:
             await self.active_connections[client_id].close(
                 code=status.WS_1011_INTERNAL_ERROR, reason=str(e)[:120]
             )
+            
+            await sys.stdout.wait_all()
+            await sys.stderr.wait_all()
             self.disconnect(client_id)
         finally:
             try:
                 connection = self.active_connections.get(client_id)
                 if connection:
+                    
+                    await sys.stdout.wait_all()
+                    await sys.stderr.wait_all()
                     await connection.close(code=1000, reason="Client disconnected")
                     self.disconnect(client_id)
             except Exception as e:

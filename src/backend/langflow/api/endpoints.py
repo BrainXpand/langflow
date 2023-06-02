@@ -1,7 +1,9 @@
 import logging
 from importlib.metadata import version
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response
+from starlette.responses import HTMLResponse, JSONResponse
+import html
 
 from langflow.api.schemas import (
     ExportedFlow,
@@ -20,6 +22,64 @@ logger = logging.getLogger(__name__)
 @router.get("/all")
 def get_all():
     return build_langchain_types_dict()
+
+@router.get("/logs", response_class=HTMLResponse)
+async def logs_endpoint():
+    try:
+        with open('stdout.log', 'r') as f:
+            stdout = f.readlines()
+        with open('stderr.log', 'r') as f:
+            stderr = f.readlines()
+    except FileNotFoundError:
+        return HTMLResponse("<h1>No logs have been created yet</h1>")
+
+    content = """
+    <style>
+    .logs {
+        display: flex;
+        justify-content: space-around;
+    }
+    .stdout, .stderr {
+        width: 45%;
+        overflow-x: auto;
+        white-space: pre-wrap;
+    }
+    </style>
+    <script src="https://unpkg.com/ansi_up"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const ansi_up = new AnsiUp();
+        const stdout_container = document.getElementById('stdout');
+        const stderr_container = document.getElementById('stderr');
+        stdout_container.innerHTML = ansi_up.ansi_to_html(stdout_container.innerText);
+        stderr_container.innerHTML = ansi_up.ansi_to_html(stderr_container.innerText);
+    });
+    </script>
+    """
+
+    content += '<div class="logs">'
+    content += '<div class="stdout">'
+    content += "<h1>Standard Output</h1><hr>"
+    content += "<pre id='stdout'>{}</pre>".format(html.escape(''.join(stdout)))
+    content += '</div>'
+    
+    content += '<div class="stderr">'
+    content += "<h1>Standard Error</h1><hr>"
+    content += "<pre id='stderr'>{}</pre>".format(html.escape(''.join(stderr)))
+    content += '</div>'
+    content += '</div>'
+
+    return content
+
+@router.get("/clear_logs")
+async def clear_logs():
+    try:
+        open('stdout.log', 'w').close()
+        open('stderr.log', 'w').close()
+    except Exception as e:
+        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+
+    return JSONResponse({"status": "success", "message": "Logs cleared successfully"})
 
 
 @router.post("/predict", response_model=PredictResponse)
