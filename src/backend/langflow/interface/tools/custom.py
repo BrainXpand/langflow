@@ -71,7 +71,7 @@ class KnowySearchTool(BaseTool, BaseModel):
         elif search_source=="knowy":
             url = 'https://devapi.knowy.ai/search/search'
             response = get(url, headers=headers, params={'query': query})
-            chunk_ids = list(set([p['id'] for p in response.json()]))
+            chunk_ids = list(set([id for id in response.json()]))
 
         elif search_source=="knowy_sections":
             url = 'https://devapi.knowy.ai/search/search'
